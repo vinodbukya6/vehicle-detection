@@ -1,0 +1,24 @@
+<html lang="en">
+  <head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h3 class="text-muted">Vehicle Detection System Demo</h3>
+      </div>
+      <hr/>
+      <div>
+        <form action="{{ url_for('vehicledetctionsystem') }}" method="POST" enctype="multipart/form-data">
+         <p>Upload Video File</p>
+         <input type="file" name="uploadfile"/>
+         <input type="submit" class="my-cta-button" id="submitButton" value="vehicledetctionsystem"/>
+         <br/><hr/>
+         </form><br/>
+         
+      </div>
+    </div>
+  </body>
+</html>
+
