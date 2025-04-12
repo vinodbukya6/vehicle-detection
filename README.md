@@ -1,0 +1,98 @@
+# Vehicle Detection and Counting using YOLO and RTSP Stream
+
+This project uses a YOLO object detection model (converted to TFLite) to detect and count different types of vehicles (motor vehicles and two-wheelers) from an RTSP video stream in real-time. It also includes night vision enhancement for better detection in low-light conditions.
+
+
+## Features
+
+- Real-time object detection using YOLOv8 (TFLite format)
+- RTSP camera stream reading and writing using multiprocessing
+- Night vision enhancement using OpenCV and custom logic
+- Tracks vehicles crossing a virtual ROI line
+- Saves timestamped detection logs into CSV files
+- Lightweight and optimized for CPU inference
+
+
+## Folder Structure
+
+```
+.
+├── main.py                   # Main entry point of the application
+├── util_functions/
+│   └── night_vision.py       # Contains night vision enhancement logic
+├── best_integer_quant_2cls.tflite  # YOLOv8 model with 2 classes (TFLite format)
+└── detections_DATE.csv       # Output detection log files
+```
+
+## Requirements
+
+- Python 3.8+
+- Dependencies:
+  - `ultralytics`
+  - `opencv-python`
+  - `torch`
+  - `Pillow`
+  - `numpy`
+  - `pandas`
+
+You can install the requirements using:
+
+```
+pip install -r requirements.txt
+```
+
+## How It Works
+
+1. **Stream Reading**:
+   - The video stream is read using OpenCV in a separate process and pushed to a shared queue.
+2. **Night Vision Enhancement**:
+   - The `night_vision_core()` function enhances frames for low-light conditions.
+3. **Object Detection**:
+   - YOLOv8 TFLite model is used to detect motor vehicles and two-wheelers.
+4. **ROI Line Crossing Detection**:
+   - If a vehicle crosses a virtual horizontal line, it is counted.
+5. **Result Logging**:
+   - Every detection event is logged with a timestamp into a `.csv` file.
+   - Only new unique detection frames are saved to avoid duplicates.
+
+
+## Getting Started
+
+1. **Update RTSP URL**:
+   Replace the `url` in `main.py` with your RTSP camera stream URL.
+
+2. **Run the Program**:
+   ```
+   python main.py
+   ```
+
+3. **Output**:
+   - ROI line overlay image: `roi_frame.jpg`
+   - CSV log: `detections_DD_MM_YYYY.csv`
+
+
+## Sample Output Format (`detections_12_04_2025.csv`)
+
+| Date_and_Time       | Detections                       | Total_objects_crossed |
+|---------------------|----------------------------------|------------------------|
+| 12/04/2025 14:22:10 | ['motor_vehicles: 2', 'two_wheelers: 1'] | 3               |
+
+---
+
+## Model Info
+
+- **Model Path**: `best_integer_quant_2cls.tflite`
+- **Classes**:
+  - `0`: motor_vehicles
+  - `1`: two_wheelers
+
+## Utility Modules
+
+- **night_vision.py**:
+  - Enhances image visibility under poor lighting using contrast adjustments and image filters.
+
+## Notes
+
+- Adjust the `cy_linha`, `offset`, and `conf` parameters in `feed_read()` based on camera angle and vehicle speed for optimal results.
+- Current model only detects 2 classes; update your model if more classes are required.
+- The system only writes new, unique detection rows to avoid redundant logging.
